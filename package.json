@@ -30,6 +30,10 @@
     "src/**/*.js": [
       "eslint --cache --fix",
       "prettier --write"
+    ],
+    "demos/**/*.js": [
+      "eslint --cache --fix",
+      "prettier --write"
     ]
   },
   "publishConfig": {
