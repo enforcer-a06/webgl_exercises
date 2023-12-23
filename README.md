@@ -1,2 +1,1 @@
-# tpl-lib-js
-library javascript template
+webgl exercises project

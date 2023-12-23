@@ -1,7 +1,7 @@
 {
   "name": "tpl-lib-js",
   "version": "1.0.0",
-  "description": "library javascript template",
+  "description": "webgl exercises project",
   "main": "dist/index.js",
   "files": [
     "dist"
@@ -22,9 +22,7 @@
     "release:only": "npm publish --registry=https://registry.npmjs.com/"
   },
   "keywords": [
-    "library",
-    "javascript",
-    "template"
+    "webgl  exercises"
   ],
   "author": "enforcer.a06@gmail.com",
   "license": "MIT",
