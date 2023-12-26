@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import { initShader, getTranslateMatrix } from '../utils';
+import { initShader, getRotateMatrix } from '../utils';
 
 const canvas = document.getElementById('canvas');
 
@@ -40,13 +39,11 @@ gl.bufferData(gl.ARRAY_BUFFER, points, gl.STATIC_DRAW);
 gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false, 0, 0);
 gl.enableVertexAttribArray(aPosition);
 
-let x = -1;
+let x = 0;
 const animation = () => {
-  x += 0.01;
-  if (x > 1) {
-    x = -1;
-  }
-  const matrix = getTranslateMatrix(x, x);
+  x -= 0.01;
+
+  const matrix = getRotateMatrix(x);
   gl.uniformMatrix4fv(uMat, false, matrix); // 第二个参数在webgl中恒为false
   gl.drawArrays(gl.TRIANGLES, 0, 3);
   requestAnimationFrame(animation);

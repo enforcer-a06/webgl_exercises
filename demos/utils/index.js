@@ -33,4 +33,30 @@ const initShader = (gl, VERTEX_SHADER_SOURCE, FRAGMENT_SHADER_SOURCE) => {
   return program;
 };
 
-export { initShader };
+// 平移矩阵
+const getTranslateMatrix = (x = 0, y = 0, z = 0) => {
+  return new Float32Array([1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, x, y, z, 1]);
+};
+// 缩放矩阵
+const getScaleMatrix = (tx = 1, ty = 1, tz = 1) => {
+  return new Float32Array([tx, 0.0, 0.0, 0.0, 0.0, ty, 0.0, 0.0, 0.0, 0.0, tz, 0.0, 0, 0, 0, 1]);
+};
+
+// 绕Z轴旋转的旋转矩阵
+const getRotateMatrix = deg => {
+  const { cos, sin } = Math;
+  return new Float32Array([cos(deg), sin(deg), 0.0, 0.0, -sin(deg), cos(deg), 0.0, 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 1]);
+};
+
+const mixMatrix = (matA, matB) => {
+  const result = new Float32Array(16);
+  for (let i = 0; i < 4; i++) {
+    result[i] = matA[i] * matB[0] + matA[i + 4] * matB[1] + matA[i + 8] * matB[2] + matA[i + 12] * matB[3];
+    result[i + 4] = matA[i] * matB[4] + matA[i + 4] * matB[5] + matA[i + 8] * matB[6] + matA[i + 12] * matB[7];
+    result[i + 8] = matA[i] * matB[8] + matA[i + 4] * matB[9] + matA[i + 8] * matB[10] + matA[i + 12] * matB[11];
+    result[i + 12] = matA[i] * matB[12] + matA[i + 4] * matB[13] + matA[i + 8] * matB[14] + matA[i + 12] * matB[15];
+  }
+  return result;
+};
+
+export { initShader, getTranslateMatrix, getScaleMatrix, getRotateMatrix, mixMatrix };

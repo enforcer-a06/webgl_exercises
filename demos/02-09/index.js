@@ -1,4 +1,4 @@
-import { initShader } from '../utils';
+import { initShader, getScaleMatrix } from '../utils';
 
 const canvas = document.getElementById('canvas');
 
@@ -39,16 +39,11 @@ gl.bufferData(gl.ARRAY_BUFFER, points, gl.STATIC_DRAW);
 gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false, 0, 0);
 gl.enableVertexAttribArray(aPosition);
 
-const getScaleMatrix = (tx = 0, ty = 0, tz = 0) => {
-  // 这种行主序还是列主序都是相等的 这种沿对角线对称的矩阵成为对称矩阵。
-  return new Float32Array([tx, 0.0, 0.0, 0.0, 0.0, ty, 0.0, 0.0, 0.0, 0.0, tz, 0.0, 0, 0, 0, 1]);
-};
-
-let x = -1;
+let x = 0.1;
 const animation = () => {
   x += 0.01;
-  if (x > 1) {
-    x = -1;
+  if (x > 1.5) {
+    x = 0.1;
   }
   const matrix = getScaleMatrix(x, x);
   gl.uniformMatrix4fv(uMat, false, matrix); // 第二个参数在webgl中恒为false
