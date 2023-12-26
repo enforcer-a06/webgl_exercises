@@ -30,11 +30,6 @@ const program = initShader(gl, VERTEX_SHADER_SOURCE, FRAGMENT_SHADER_SOURCE);
 const aPosition = gl.getAttribLocation(program, 'aPosition');
 const uColor = gl.getUniformLocation(program, 'uColor');
 gl.uniform4f(uColor, 0.0, 1.0, 0.0, 1.0);
-// const draw = (x, y) => {
-//   gl.vertexAttrib2f(aPosition, x, y);
-//   gl.uniform4f(uColor, x, y, 0.0, 1.0); // 片元着色器重声明的是vec4 那么下面就必须使用4f方法
-//   gl.drawArrays(gl.POINTS, 0, 1);
-// };
 
 const points = new Float32Array([-0.5, -0.5, 0.5, -0.5, 0.0, 0.5]);
 
