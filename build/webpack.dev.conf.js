@@ -25,6 +25,7 @@ const devConfig = merge(baseConfig, {
         warnings: false,
       },
     },
+    static: [resolve('demos/public')],
     historyApiFallback: {
       disableDotRule: true,
     },
@@ -41,20 +42,7 @@ const devConfig = merge(baseConfig, {
   module: {
     rules: getCssLoaders(),
   },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-    new ReactRefreshWebpackPlugin(),
-    new ESLintPlugin(),
-    // new CopyWebpackPlugin({
-    //   patterns: [
-    //     {
-    //       from: resolve('src/public'),
-    //       to: resolve(`dist/${config[process.env.BUILD_ENV].SUB_DIR}`),
-    //     },
-    //   ],
-    // }),
-    ...htmlPlugins,
-  ],
+  plugins: [new webpack.HotModuleReplacementPlugin(), new ReactRefreshWebpackPlugin(), new ESLintPlugin(), ...htmlPlugins],
 });
 
 module.exports = devConfig;

@@ -1,0 +1,84 @@
+import { initShader } from '../utils';
+
+const canvas = document.getElementById('canvas');
+
+const gl = canvas.getContext('webgl');
+
+gl.clearColor(0.0, 0.0, 0.0, 0.0);
+gl.clear(gl.COLOR_BUFFER_BIT);
+
+// 在webgl中使用的是列主序的矩阵
+const VERTEX_SHADER_SOURCE = `
+  attribute vec4 aPosition;
+  attribute vec4 aTex;
+  varying vec2 vTex;
+  void main(){
+    gl_Position = aPosition;
+    vTex = vec2(aTex.x,aTex.y);
+  }
+`;
+
+const FRAGMENT_SHADER_SOURCE = `
+  precision mediump float;
+  uniform sampler2D uSampler;
+  varying vec2 vTex;
+
+  void main(){
+    gl_FragColor=texture2D(uSampler,vTex);
+  }
+`;
+
+const program = initShader(gl, VERTEX_SHADER_SOURCE, FRAGMENT_SHADER_SOURCE);
+
+const aPosition = gl.getAttribLocation(program, 'aPosition');
+const aTex = gl.getAttribLocation(program, 'aTex');
+const uSampler = gl.getUniformLocation(program, 'uSampler');
+
+const points = new Float32Array([-0.5, -0.5, 0.0, 0.0, 0.5, -0.5, 1.0, 0.0, -0.5, 0.5, 0.0, 1.0, 0.5, 0.5, 1.0, 1.0]);
+
+const buffer = gl.createBuffer();
+const BYTES = points.BYTES_PER_ELEMENT;
+gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+gl.bufferData(gl.ARRAY_BUFFER, points, gl.STATIC_DRAW);
+gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false, BYTES * 4, 0);
+gl.enableVertexAttribArray(aPosition);
+gl.vertexAttribPointer(aTex, 2, gl.FLOAT, false, BYTES * 4, BYTES * 2);
+gl.enableVertexAttribArray(aTex);
+
+const img = new Image();
+img.onload = () => {
+  // 1.创建纹理对象
+  const texture = gl.createTexture();
+  // 2.将图片的Y轴进行翻转
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+  // 3.开启纹理单元
+  gl.activeTexture(gl.TEXTURE0);
+  // 4.绑定纹理对象
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  // 5.设置图形放大缩小水平垂直填充逻辑逻辑
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  // 6.配置纹理图形
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, img);
+  // 7.给纹理变量赋值
+  gl.uniform1i(uSampler, 0);
+
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+};
+img.src = '/1.jpg';
+canvas.onclick = e => {
+  const {
+    offsetX,
+    offsetY,
+    target: { width, height },
+  } = e;
+
+  const halfWidth = width / 2;
+  const halfHeight = height / 2;
+  const x = (offsetX - halfWidth) / halfWidth;
+  const y = (halfHeight - offsetY) / halfHeight;
+
+  console.log(x, y);
+};
