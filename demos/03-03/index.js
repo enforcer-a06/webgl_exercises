@@ -20,11 +20,14 @@ const VERTEX_SHADER_SOURCE = `
 
 const FRAGMENT_SHADER_SOURCE = `
   precision mediump float;
-  uniform sampler2D uSampler;
+  uniform sampler2D uSampler1;
+  uniform sampler2D uSampler2;
   varying vec2 vTex;
 
   void main(){
-    gl_FragColor=texture2D(uSampler,vTex);
+    vec4 c1 = texture2D(uSampler1,vTex);
+    vec4 c2 = texture2D(uSampler2,vTex);
+    gl_FragColor=c1*c2;
   }
 `;
 
@@ -32,7 +35,8 @@ const program = initShader(gl, VERTEX_SHADER_SOURCE, FRAGMENT_SHADER_SOURCE);
 
 const aPosition = gl.getAttribLocation(program, 'aPosition');
 const aTex = gl.getAttribLocation(program, 'aTex');
-const uSampler = gl.getUniformLocation(program, 'uSampler');
+const uSampler1 = gl.getUniformLocation(program, 'uSampler1');
+const uSampler2 = gl.getUniformLocation(program, 'uSampler2');
 
 const points = new Float32Array([-0.5, -0.5, 0.0, 0.0, 0.5, -0.5, 1.0, 0.0, -0.5, 0.5, 0.0, 1.0, 0.5, 0.5, 1.0, 1.0]);
 
@@ -45,29 +49,41 @@ gl.enableVertexAttribArray(aPosition);
 gl.vertexAttribPointer(aTex, 2, gl.FLOAT, false, BYTES * 4, BYTES * 2);
 gl.enableVertexAttribArray(aTex);
 
-const img = new Image();
-img.onload = () => {
-  // 1.创建纹理对象
-  const texture = gl.createTexture();
-  // 2.将图片的Y轴进行翻转
-  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
-  // 3.开启纹理单元
-  gl.activeTexture(gl.TEXTURE0);
-  // 4.绑定纹理对象
-  gl.bindTexture(gl.TEXTURE_2D, texture);
-  // 5.设置图形放大缩小水平垂直填充逻辑逻辑
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-  // 6.配置纹理图形
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, img);
-  // 7.给纹理变量赋值
-  gl.uniform1i(uSampler, 0);
+const useTexture = (url, textureIndex, samplerLocation) => {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      // 1.创建纹理对象
+      const texture = gl.createTexture();
+      // 2.将图片的Y轴进行翻转
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+      // 3.开启纹理单元
+      gl.activeTexture(gl[`TEXTURE${textureIndex}`]);
+      // 4.绑定纹理对象
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      // 5.设置图形放大缩小水平垂直填充逻辑逻辑
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      // 6.配置纹理图形
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, img);
+      // 7.给纹理变量赋值
+      gl.uniform1i(samplerLocation, textureIndex);
 
+      resolve();
+    };
+    img.src = url;
+  });
+};
+
+const draw = async () => {
+  await useTexture('/1.png', 0, uSampler1);
+  await useTexture('/2.png', 1, uSampler2);
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 };
-img.src = '/1.png';
+
+draw();
 canvas.onclick = e => {
   const {
     offsetX,
