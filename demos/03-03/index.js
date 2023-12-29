@@ -78,8 +78,8 @@ const useTexture = (url, textureIndex, samplerLocation) => {
 };
 
 const draw = async () => {
-  await useTexture('/1.png', 0, uSampler1);
-  await useTexture('/2.png', 1, uSampler2);
+  await useTexture('/static/1.png', 0, uSampler1);
+  await useTexture('/static/2.png', 1, uSampler2);
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 };
 

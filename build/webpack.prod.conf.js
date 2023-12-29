@@ -1,9 +1,11 @@
 const chalk = require('chalk');
 const { merge } = require('webpack-merge');
 const TerserPlugin = require('terser-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const { resolve } = require('./utils');
 const baseConfig = require('./webpack.base.conf');
 
 const prodConfig = {

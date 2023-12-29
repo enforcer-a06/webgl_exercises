@@ -67,7 +67,7 @@ img.onload = () => {
 
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 };
-img.src = '/1.png';
+img.src = '/static/1.png';
 canvas.onclick = e => {
   const {
     offsetX,
