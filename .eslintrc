@@ -43,6 +43,7 @@
     "promise/param-names": "off",
     "react/display-name": "off",
     "react/prop-types": "off",
-    "n/no-callback-literal": "off"
+    "n/no-callback-literal": "off",
+    "no-debugger": "off"
   }
 }

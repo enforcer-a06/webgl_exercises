@@ -48,6 +48,7 @@ const getRotateMatrix = deg => {
   return new Float32Array([cos(deg), sin(deg), 0.0, 0.0, -sin(deg), cos(deg), 0.0, 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 1]);
 };
 
+// 矩阵相乘
 const mixMatrix = (matA, matB) => {
   const result = new Float32Array(16);
   for (let i = 0; i < 4; i++) {
@@ -59,4 +60,45 @@ const mixMatrix = (matA, matB) => {
   return result;
 };
 
-export { initShader, getTranslateMatrix, getScaleMatrix, getRotateMatrix, mixMatrix };
+// 向量归一化
+const normalized = vec3 => {
+  const [x, y, z] = vec3;
+  const sum = x * x + y * y + z * z;
+  const length = Math.sqrt(sum);
+  return [x / length, y / length, z / length];
+};
+
+// 叉积
+const cross = (vec3A, vec3B) => {
+  return new Float32Array([vec3A[1] * vec3B[2] - vec3A[2] * vec3B[1], vec3A[2] * vec3B[0] - vec3A[0] * vec3B[2], vec3A[0] * vec3B[1] - vec3A[1] * vec3B[0]]);
+};
+
+// 点积
+const dot = (vec3A, vec3B) => {
+  return vec3A[0] * vec3B[0] + vec3A[1] * vec3B[1] + vec3A[2] * vec3B[2];
+};
+
+// 向量的差
+const minus = (vec3A, vec3B) => {
+  return new Float32Array([vec3A[0] - vec3B[0], vec3A[1] - vec3B[1], vec3A[2] - vec3B[2]]);
+};
+
+const getViewMatrix = (eye, lookAt, up) => {
+  // 视点
+  const vec3Eye = new Float32Array([...eye]);
+  // 目标点
+  const vec3LookAt = new Float32Array([...lookAt]);
+  // 上方向
+  let vec3Up = new Float32Array([...up]);
+
+  let z = minus(vec3Eye, vec3LookAt);
+  z = normalized(z);
+  vec3Up = normalized(vec3Up);
+  let x = cross(z, vec3Up);
+  x = normalized(x);
+  const y = cross(x, z);
+
+  return new Float32Array([x[0], y[0], z[0], 0, x[1], y[1], z[1], 0, x[2], y[2], z[2], 0, -dot(x, vec3Eye), -dot(y, vec3Eye), -dot(z, vec3Eye), 1]);
+};
+
+export { initShader, getTranslateMatrix, getScaleMatrix, getRotateMatrix, mixMatrix, normalized, cross, dot, minus, getViewMatrix };
