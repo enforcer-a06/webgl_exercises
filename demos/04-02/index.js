@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { initShader, getTranslateMatrix, getViewMatrix } from '../utils';
+import { initShader, getTranslateMatrix, getViewMatrix, getOrthoMatrix, mixMatrix } from '../utils';
 
 const canvas = document.getElementById('canvas');
 
@@ -40,17 +40,19 @@ gl.bufferData(gl.ARRAY_BUFFER, points, gl.STATIC_DRAW);
 gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false, 0, 0);
 gl.enableVertexAttribArray(aPosition);
 
-const y = -0.1;
+let y = -0.1;
 const animation = () => {
-  // y += 0.01;
-  // if (y > 1) {
-  //   y = -0.1;
-  // }
+  y += 0.001;
+  if (y > 1) {
+    y = -0.1;
+  }
   const eye = [0.0, y, 0.2];
   const lookAt = [0.0, 0.0, 0.0];
   const up = [0.0, 1, 0.0];
-  const matrix = getViewMatrix(eye, lookAt, up);
-  gl.uniformMatrix4fv(uMat, false, matrix); //
+  const viewMatrix = getViewMatrix(eye, lookAt, up);
+  const orthoMatrix = getOrthoMatrix(-1, 1, 1, -1, 0, 1);
+  // gl.uniformMatrix4fv(uMat, false, viewMatrix);
+  gl.uniformMatrix4fv(uMat, false, mixMatrix(viewMatrix, orthoMatrix));
   gl.drawArrays(gl.TRIANGLES, 0, 3);
 
   requestAnimationFrame(animation);

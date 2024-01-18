@@ -82,7 +82,7 @@ const dot = (vec3A, vec3B) => {
 const minus = (vec3A, vec3B) => {
   return new Float32Array([vec3A[0] - vec3B[0], vec3A[1] - vec3B[1], vec3A[2] - vec3B[2]]);
 };
-
+// 视图矩阵
 const getViewMatrix = (eye, lookAt, up) => {
   // 视点
   const vec3Eye = new Float32Array([...eye]);
@@ -94,11 +94,23 @@ const getViewMatrix = (eye, lookAt, up) => {
   let z = minus(vec3Eye, vec3LookAt);
   z = normalized(z);
   vec3Up = normalized(vec3Up);
-  let x = cross(z, vec3Up);
+  let x = cross(vec3Up, z);
   x = normalized(x);
-  const y = cross(x, z);
+  const y = cross(z, x);
 
   return new Float32Array([x[0], y[0], z[0], 0, x[1], y[1], z[1], 0, x[2], y[2], z[2], 0, -dot(x, vec3Eye), -dot(y, vec3Eye), -dot(z, vec3Eye), 1]);
 };
 
-export { initShader, getTranslateMatrix, getScaleMatrix, getRotateMatrix, mixMatrix, normalized, cross, dot, minus, getViewMatrix };
+// 正射投影矩阵
+const getOrthoMatrix = (l, r, t, b, n, f) => {
+  return new Float32Array([2 / (r - l), 0, 0, 0, 0, 2 / (t - b), 0, 0, 0, 0, -2 / (f - n), 0, -(r + l) / (r - l), -(t + b) / (t - b), -(f + n) / (f - n), 1]);
+};
+
+// // 透视投影矩阵
+// const getOrthoMatrix = (l, r, t, b, n, f) => {
+//   return new Float32Array([
+
+//   ]);
+// };
+
+export { initShader, getTranslateMatrix, getScaleMatrix, getRotateMatrix, mixMatrix, normalized, cross, dot, minus, getViewMatrix, getOrthoMatrix };
