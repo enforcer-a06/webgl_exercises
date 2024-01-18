@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { initShader, getTranslateMatrix, getViewMatrix, getOrthoMatrix, mixMatrix } from '../utils';
+import { initShader, getTranslateMatrix, getViewMatrix, getPerspective, mixMatrix } from '../utils';
 
 const canvas = document.getElementById('canvas');
 
@@ -15,7 +15,7 @@ const VERTEX_SHADER_SOURCE = `
   varying vec4 vColor;
   uniform mat4 mat;
   void main(){
-    gl_Position = aPosition;
+    gl_Position = mat * aPosition;
     vColor = aColor;
   }
 `;
@@ -36,29 +36,29 @@ const uMat = gl.getUniformLocation(program, 'mat');
 
 // prettier-ignore
 const points = new Float32Array([
-  0.75,1.0,0.6,  1.0,0.0,0.0,
-  0.25,-1.0,0.6, 1.0,0.0,0.0,
-  1.0,-1.0,0.6,  1.0,0.0,0.0,
+    0.75,1.0,-0.6, 1.0,0.0,0.0,
+    0.25,-1.0,-0.6, 1.0,0.0,0.0,
+    1.0, -1.0,-0.6, 1.0,0.0,0.0,
 
-  0.75,1.0,0.5,  0.0,1.0,0.0,
-  0.25,-1.0,0.5, 0.0,1.0,0.0,
-  1.0,-1.0,0.5,  0.0,1.0,0.0,
+    0.75,1.0,-0.5, 0.0,1.0,0.0,
+    0.25,-1.0,-0.5, 0.0,1.0,0.0,
+    1.0, -1.0,-0.5, 0.0,1.0,0.0,
 
-  0.75,1.0,0.4, 0.0,0.0,1.0,
-  0.25,-1.0,0.4, 0.0,0.0,1.0,
-  1.0,-1.0,0.4, 0.0,0.0,1.0,
+    0.75,1.0,-0.4, 0.0,0.0,1.0,
+    0.25,-1.0,-0.4, 0.0,0.0,1.0,
+    1.0, -1.0,-0.4, 0.0,0.0,1.0,
 
-  -0.75,1.0,0.6,  1.0,0.0,0.0,
-  -0.25,-1.0,0.6, 1.0,0.0,0.0,
-  -1.0,-1.0,0.6,  1.0,0.0,0.0,
+    -0.75,1.0,-0.6, 1.0,0.0,0.0,
+    -0.25,-1.0,-0.6, 1.0,0.0,0.0,
+    -1.0, -1.0,-0.6, 1.0,0.0,0.0,
 
-  -0.75,1.0,0.5,  0.0,1.0,0.0,
-  -0.25,-1.0,0.5, 0.0,1.0,0.0,
-  -1.0,-1.0,0.5,  0.0,1.0,0.0,
+    -0.75,1.0,-0.5, 0.0,1.0,0.0,
+    -0.25,-1.0,-0.5, 0.0,1.0,0.0,
+    -1.0, -1.0,-0.5, 0.0,1.0,0.0,
 
-  -0.75,1.0,0.4, 0.0,0.0,1.0,
-  -0.25,-1.0,0.4, 0.0,0.0,1.0,
-  1.0,-1.0,0.4, 0.0,0.0,1.0,
+    -0.75,1.0,-0.4, 0.0,0.0,1.0,
+    -0.25,-1.0,-0.4, 0.0,0.0,1.0,
+    -1.0, -1.0,-0.4, 0.0,0.0,1.0,
 ]);
 
 const buffer = gl.createBuffer();
@@ -71,21 +71,36 @@ gl.vertexAttribPointer(aColor, 3, gl.FLOAT, false, BYTES * 6, BYTES * 3);
 gl.enableVertexAttribArray(aColor);
 
 gl.drawArrays(gl.TRIANGLES, 0, 3 * 6);
-// let y = -0.1;
-// const animation = () => {
-//   y += 0.001;
-//   if (y > 1) {
-//     y = -0.1;
-//   }
-//   const eye = [0.0, y, 0.2];
-//   const lookAt = [0.0, 0.0, 0.0];
-//   const up = [0.0, 1, 0.0];
-//   const viewMatrix = getViewMatrix(eye, lookAt, up);
-//   const orthoMatrix = getOrthoMatrix(-1, 1, 1, -1, 0, 1);
-//   // gl.uniformMatrix4fv(uMat, false, viewMatrix);
-//   gl.uniformMatrix4fv(uMat, false, mixMatrix(viewMatrix, orthoMatrix));
-//   gl.drawArrays(gl.TRIANGLES, 0, 3);
 
-//   requestAnimationFrame(animation);
-// };
-// animation();
+let eyex = 0.0;
+let eyey = -0.1;
+const eyez = 0.2;
+
+function draw() {
+  const viewMatrix = getViewMatrix([eyex, eyey, eyez], [0.0, 0.0, 0.0], [0.0, 0.6, 0.0]);
+  const perspectiveMatrix = getPerspective(150, canvas.width / canvas.height, 100, 1);
+
+  gl.enable(gl.DEPTH_TEST);
+  gl.uniformMatrix4fv(uMat, false, mixMatrix(viewMatrix, perspectiveMatrix));
+  gl.drawArrays(gl.TRIANGLES, 0, 3 * 6);
+}
+
+draw();
+document.onkeydown = function (e) {
+  console.log(e.keyCode);
+  switch (e.keyCode) {
+    case 37:
+      eyex += 0.01;
+      break;
+    case 38:
+      eyey -= 0.01;
+      break;
+    case 39:
+      eyex -= 0.01;
+      break;
+    case 40:
+      eyey += 0.01;
+      break;
+  }
+  draw();
+};

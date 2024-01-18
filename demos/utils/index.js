@@ -106,11 +106,10 @@ const getOrthoMatrix = (l, r, t, b, n, f) => {
   return new Float32Array([2 / (r - l), 0, 0, 0, 0, 2 / (t - b), 0, 0, 0, 0, -2 / (f - n), 0, -(r + l) / (r - l), -(t + b) / (t - b), -(f + n) / (f - n), 1]);
 };
 
-// // 透视投影矩阵
-// const getOrthoMatrix = (l, r, t, b, n, f) => {
-//   return new Float32Array([
+// 透视投影矩阵
+const getPerspective = (fov, aspect, far, near) => {
+  fov = (fov * Math.PI) / 180;
+  return new Float32Array([1 / (aspect * Math.tan(fov / 2)), 0, 0, 0, 0, 1 / Math.tan(fov / 2), 0, 0, 0, 0, -(far + near) / (far - near), -(2 * far * near) / (far - near), 0, 0, -1, 0]);
+};
 
-//   ]);
-// };
-
-export { initShader, getTranslateMatrix, getScaleMatrix, getRotateMatrix, mixMatrix, normalized, cross, dot, minus, getViewMatrix, getOrthoMatrix };
+export { initShader, getTranslateMatrix, getScaleMatrix, getRotateMatrix, mixMatrix, normalized, cross, dot, minus, getViewMatrix, getOrthoMatrix, getPerspective };
