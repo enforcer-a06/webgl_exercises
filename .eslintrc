@@ -28,7 +28,8 @@
         "extensions": [
           ".js",
           ".jsx",
-          ".json"
+          ".json",
+          ".glsl"
         ]
       }
     }

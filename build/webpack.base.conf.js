@@ -17,7 +17,7 @@ const baseConfig = {
     clean: true,
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.json'],
+    extensions: ['.js', '.jsx', '.json', '.glsl'],
     alias: {
       '@': resolve('src'),
     },

@@ -1,30 +1,15 @@
 import { initShader } from '../utils';
+import vertexSource from './vertex';
+import fragmentSource from './fragment';
 
 const canvas = document.getElementById('canvas');
 
 const gl = canvas.getContext('webgl');
-// 清空画布
+
 gl.clearColor(0.0, 0.0, 0.0, 0.0);
 gl.clear(gl.COLOR_BUFFER_BIT);
 
-// 创建顶点着色器源码
-const VERTEX_SHADER_SOURCE = `
- attribute vec4 aPosition;
-  void main(){
-    gl_Position=aPosition; // 默认值为 vec4(0.0,0.0,0.0,1.0)
-    // 绘制点的大小
-    gl_PointSize=30.0;
-  }
-`;
-
-// 创建片元着色器源码
-const FRAGMENT_SHADER_SOURCE = `
-  void main(){
-    gl_FragColor=vec4(1.0,0.0,0.0,1.0);
-  }
-`;
-
-const program = initShader(gl, VERTEX_SHADER_SOURCE, FRAGMENT_SHADER_SOURCE);
+const program = initShader(gl, vertexSource, fragmentSource);
 
 const aPosition = gl.getAttribLocation(program, 'aPosition');
 // gl.vertexAttrib1f(localtion, v0);
