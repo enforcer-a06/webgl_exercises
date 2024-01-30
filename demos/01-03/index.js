@@ -1,5 +1,6 @@
 import { initShader } from '../utils';
-
+import test from './test.vs';
+console.log(test);
 const canvas = document.getElementById('canvas');
 
 const gl = canvas.getContext('webgl');

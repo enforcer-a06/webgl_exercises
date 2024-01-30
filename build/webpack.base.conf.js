@@ -37,6 +37,18 @@ const baseConfig = {
           },
         ],
       },
+      {
+        test: /\.(glsl|vs|fs|vert|frag)?$/,
+        include: [resolve('src'), resolve('demo')],
+        use: [
+          {
+            loader: 'raw-loader',
+          },
+          {
+            loader: 'glslify-loader',
+          },
+        ],
+      },
     ],
   },
   plugins: [
