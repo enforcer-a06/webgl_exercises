@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { initShader } from '../utils';
+import vertexSource from './vertex';
+import fragmentSource from './fragment';
 
 const canvas = document.getElementById('canvas');
 
@@ -8,30 +10,14 @@ const gl = canvas.getContext('webgl');
 gl.clearColor(0.0, 0.0, 0.0, 0.0);
 gl.clear(gl.COLOR_BUFFER_BIT);
 
-const VERTEX_SHADER_SOURCE = `
- attribute vec4 aPosition;
-  void main(){
-    gl_Position=aPosition;
-    // 绘制点的大小
-    gl_PointSize=10.0;
-  }
-`;
-
-const FRAGMENT_SHADER_SOURCE = `
-  precision mediump float;
-  uniform vec4 uColor;
-  void main(){
-    gl_FragColor=uColor;
-  }
-`;
-
-const program = initShader(gl, VERTEX_SHADER_SOURCE, FRAGMENT_SHADER_SOURCE);
+const program = initShader(gl, vertexSource, fragmentSource);
 
 const aPosition = gl.getAttribLocation(program, 'aPosition');
 const uColor = gl.getUniformLocation(program, 'uColor');
 gl.uniform4f(uColor, 0.0, 1.0, 0.0, 1.0);
 
-const points = new Float32Array([-0.5, -0.5, 0.5, -0.5, 0.0, 0.5, 0.5, 0.5, 0.5, 0.8, 0.8, 0.5]);
+const points = new Float32Array([-0.5, -0.5, 0.5, -0.5, 0.0, 0.5, 0.5, 0.5, 0.5, 0.8]);
+// const points = new Float32Array([-0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5]);
 
 const buffer = gl.createBuffer();
 gl.bindBuffer(gl.ARRAY_BUFFER, buffer);

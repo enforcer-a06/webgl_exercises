@@ -13,7 +13,7 @@ const App = () => {
   return (
     <>
       <Layout style={{ height: '100%' }}>
-        <Sider collapsible width={'220px'}>
+        <Sider collapsible width={'220px'} style={{ height: '100%', overflow: 'auto' }}>
           <Menus cb={jumpCB} />
         </Sider>
         <Layout>

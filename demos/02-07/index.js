@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { initShader } from '../utils';
+import vertexSource from './vertex';
+import fragmentSource from './fragment';
 
 const canvas = document.getElementById('canvas');
 
@@ -8,26 +10,7 @@ const gl = canvas.getContext('webgl');
 gl.clearColor(0.0, 0.0, 0.0, 0.0);
 gl.clear(gl.COLOR_BUFFER_BIT);
 
-const VERTEX_SHADER_SOURCE = `
- attribute vec4 aPosition;
- attribute float aDeg;
-  void main(){
-    gl_Position.x = aPosition.x * cos(aDeg) - aPosition.y * sin(aDeg);
-    gl_Position.y = aPosition.x * sin(aDeg) + aPosition.y * cos(aDeg);
-    gl_Position.z = aPosition.z;
-    gl_Position.w = aPosition.w;
-  }
-`;
-
-const FRAGMENT_SHADER_SOURCE = `
-  precision mediump float;
-  uniform vec4 uColor;
-  void main(){
-    gl_FragColor=uColor;
-  }
-`;
-
-const program = initShader(gl, VERTEX_SHADER_SOURCE, FRAGMENT_SHADER_SOURCE);
+const program = initShader(gl, vertexSource, fragmentSource);
 
 const aPosition = gl.getAttribLocation(program, 'aPosition');
 const aDeg = gl.getAttribLocation(program, 'aDeg');
