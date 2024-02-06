@@ -32,10 +32,10 @@ gl.enableVertexAttribArray(aPosition);
 // gl.drawArrays(gl.TRIANGLES, 0, 3); // 三角形 必须是三的倍数 不够不画
 // gl.drawArrays(gl.TRIANGLES, 0, 6);
 // 如果你有顶点数组[v0, v1, v2, v3, v4]，使用gl.TRIANGLE_FAN绘制时第一个三角形由顶点 v0（中心点）、v1 和 v2 组成。 第二个三角形由顶点 v0（中心点）、v2 和 v3 组成。
-// 如果有更多顶点，继续以这种方式绘制，例如，第三个三角形由 v0（中心点）、v3 和 v4 组成。
+// 如果有更多顶点，继续以这种方式绘制，例如，第三个三角形由 v0（中心点）、v3 和 v4 组成。具体情况也取决于drawArrays的时候使用几个顶点
 // gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
 // 如果你有顶点数组[v0, v1, v2, v3, v4]，第一个三角形将使用 v0, v1, v2 这三个顶点。第二个三角形将使用接下来的一组三个顶点：v1, v2, v3。
-// 绘制结果：只有两个三角形会被绘制出来。这两个三角形将共享一条边（由顶点 v1 和 v2 形成）。
+// 绘制结果：只有两个三角形会被绘制出来。这两个三角形将共享一条边（由顶点 v1 和 v2 形成）。具体情况也取决于drawArrays的时候使用几个顶点
 gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
 canvas.onclick = e => {
